@@ -93,6 +93,7 @@ public class RecipeData implements CommandLineRunner {
 
         Recipe recipe1 = new Recipe();
 
+        recipe1.setName("Pastitsio");
         recipe1.setDescription("Perfect Pastitsio");
         recipe1.setPrepTime(20);
         recipe1.setCookTime(30);
@@ -116,6 +117,33 @@ public class RecipeData implements CommandLineRunner {
         recipe1.setServings(4);
 
         recipeRepository.save(recipe1);
+
+        Recipe recipe2 = new Recipe();
+
+        recipe2.setName("Mousaka");
+        recipe2.setDescription("Perfect Mousaka");
+        recipe2.setPrepTime(20);
+        recipe2.setCookTime(30);
+        recipe2.setDifficulty(Difficulty.KIND_OF_HARD);
+        recipe2.setDirections("Cook the potatoes and the meat. Pure Besamel on top and bake in the oven");
+        recipe2.setNotes("Relax everything is going to be okay");
+
+        Ingredient ingredient3 = new Ingredient("Potatoes", new BigDecimal(2), "kg");
+        Ingredient ingredient4 = new Ingredient("Beef Meat", new BigDecimal(1), "kg");
+
+        recipe2.getIngredients().add(ingredient3);
+        recipe2.getIngredients().add(ingredient4);
+
+
+        /*recipe1.addIngredient(new Ingredient("Besamel", new BigDecimal(1), "packet"));
+        recipe1.addIngredient(new Ingredient("Olive Oil", new BigDecimal(20), "ml"));
+        recipe1.addIngredient(new Ingredient("Salt", new BigDecimal(1), "SoupSpoon"));*/
+
+        recipe2.getCategories().add(greekCategory);
+
+        recipe2.setServings(4);
+
+        recipeRepository.save(recipe2);
 
 
         System.out.println("Recipes Loaded: " + recipeRepository.count());

@@ -1,16 +1,17 @@
 package com.recipeye.recipeye_api.domain;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @Document
 public class Category {
     @Id
@@ -18,5 +19,5 @@ public class Category {
     private String description;
 
     @DBRef
-    private List<Recipe> recipes;
+    private List<Recipe> recipes = new ArrayList<>();
 }

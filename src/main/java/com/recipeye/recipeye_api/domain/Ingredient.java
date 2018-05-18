@@ -1,17 +1,16 @@
 package com.recipeye.recipeye_api.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 public class Ingredient {
 
-    @Id
-    private String id;
+
+    private String id = UUID.randomUUID().toString();
     private String description;
     private BigDecimal amount;
     private String uom;

@@ -50,6 +50,11 @@ public class RecipeData implements CommandLineRunner {
         cat4.setDescription("Vegan");
         categoryRepository.save(cat4);
 
+        Category cat5 = new Category();
+        cat4.setDescription("Fast Food");
+        categoryRepository.save(cat5);
+
+
 
         System.out.println("Categories Loaded: " + categoryRepository.count());
 
@@ -83,11 +88,18 @@ public class RecipeData implements CommandLineRunner {
             throw new RuntimeException("Expected Category Not Found");
         }
 
+        Optional<Category> fastfoodCategoryOptional = categoryRepository.findByDescription("Vegan");
+
+        if(!fastfoodCategoryOptional.isPresent()){
+            throw new RuntimeException("Expected Category Not Found");
+        }
+
 
         Category americanCategory = americanCategoryOptional.get();
         Category mexicanCategory = mexicanCategoryOptional.get();
         Category greekCategory = greekCategoryOptional.get();
         Category veganCategory = veganCategoryOptional.get();
+        Category fastfoodCategory = fastfoodCategoryOptional.get();
 
 
 

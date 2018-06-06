@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class CategoryMapperImpl implements CategoryMapper {
 
+
+
     @Override
     public CategoryDto categoryToCategoryDto(Category category) {
        if(category == null){
@@ -17,6 +19,12 @@ public class CategoryMapperImpl implements CategoryMapper {
 
        categoryDto.setDescription(category.getDescription());
        categoryDto.setId(category.getId());
+
+        /*if (category.getRecipes() != null && category.getRecipes().size() > 0){
+            category.getRecipes()
+                    .forEach(recipe -> categoryDto.getRecipes()
+                            .add(recipeMapper.recipeToRecipeDto(recipe)));
+        }*/
 
        return categoryDto;
     }
@@ -32,6 +40,12 @@ public class CategoryMapperImpl implements CategoryMapper {
         category.setDescription(categoryDto.getDescription());
         category.setId(categoryDto.getId());
 
+        /*if (categoryDto.getRecipes() != null && categoryDto.getRecipes().size() > 0){
+            categoryDto.getRecipes()
+                    .forEach(recipeDto -> category.getRecipes()
+                            .add(recipeMapper.recipeDtoToRecipe(recipeDto)));
+        }
+*/
         return category;
     }
 }

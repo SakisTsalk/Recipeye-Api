@@ -27,11 +27,21 @@ public class RecipeController {
 
     }
 
-    @GetMapping("{name}")
+    @GetMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public RecipeDto getRecipeByName(@PathVariable String name) {
+    public RecipeDto getRecipeByName(@PathVariable String name)
+    {
         return recipeService.gerRecipeByName(name);
     }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public RecipeDto createNewRecipe(@RequestBody RecipeDto recipeDto) {
+
+        return  recipeService.createNewRecipe(recipeDto);
+    }
+
+
 
 
 }

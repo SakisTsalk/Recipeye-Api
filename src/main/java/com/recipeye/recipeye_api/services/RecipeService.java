@@ -12,4 +12,6 @@ public interface RecipeService {
 
      RecipeDto gerRecipeByName(String name);
 
+    RecipeDto createNewRecipe(RecipeDto recipeDto);
+
 }

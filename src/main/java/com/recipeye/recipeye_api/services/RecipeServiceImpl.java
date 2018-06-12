@@ -65,16 +65,16 @@ public class RecipeServiceImpl implements RecipeService {
 
       recipeRepository.save(recipe);
 
-        List<CategoryDto> categoryDtos = recipeDto.getCategories();
+        List<String> categoryDtoNames = recipeDto.getCategoryNames();
 
-        for(CategoryDto categoryDto: categoryDtos){
+        for(String categoryName: categoryDtoNames){
 
 
-            Optional<Category> categoryOptional = categoryRepository.findByDescription(categoryDto.getDescription());
+            Optional<Category> categoryOptional = categoryRepository.findByDescription(categoryName);
 
 
             if(!categoryOptional.isPresent()){
-                log.error("Category not found:" +categoryDto.getDescription());
+                log.error("Category not found:" +categoryName);
             }
 
             Category category = categoryOptional.get();
@@ -131,7 +131,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public List<CategoryDto> getCategoriesByRecipeName(String name) {
+    public List<String> getCategoriesByRecipeName(String name) {
 
         Optional<Recipe> recipeOptional = recipeRepository.findByName(name);
 
@@ -144,7 +144,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         RecipeDto recipeDto = recipeMapper.recipeToRecipeDto(recipe);
 
-        return  recipeDto.getCategories();
+        return  recipeDto.getCategoryNames();
     }
 
 

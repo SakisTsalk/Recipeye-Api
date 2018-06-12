@@ -1,12 +1,15 @@
 package com.recipeye.recipeye_api.domain;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 public class Ingredient {
 
 

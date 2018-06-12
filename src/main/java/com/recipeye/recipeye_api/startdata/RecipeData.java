@@ -26,8 +26,8 @@ public class RecipeData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-      /*  loadCategories();
-        loadRecipes();*/
+        loadCategories();
+        loadRecipes();
     }
 
 
@@ -110,7 +110,7 @@ public class RecipeData implements CommandLineRunner {
         recipe1.addIngredient(new Ingredient("Olive Oil", new BigDecimal(20), "ml"));
         recipe1.addIngredient(new Ingredient("Salt", new BigDecimal(1), "SoupSpoon"));*/
 
-        recipe1.getCategories().add(greekCategory);
+        recipe1.getCategoryNames().add(greekCategory.getDescription());
 
         //greekCategory.getRecipes().add(recipe1);
 
@@ -142,7 +142,7 @@ public class RecipeData implements CommandLineRunner {
         recipe1.addIngredient(new Ingredient("Olive Oil", new BigDecimal(20), "ml"));
         recipe1.addIngredient(new Ingredient("Salt", new BigDecimal(1), "SoupSpoon"));*/
 
-        recipe2.getCategories().add(greekCategory);
+        recipe2.getCategoryNames().add(greekCategory.getDescription());
 
        // greekCategory.getRecipes().add(recipe2);
 

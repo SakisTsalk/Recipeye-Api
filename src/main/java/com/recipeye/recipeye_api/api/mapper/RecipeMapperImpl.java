@@ -40,10 +40,10 @@ public class RecipeMapperImpl implements RecipeMapper {
                             .add(ingredientMapper.ingredientToIngredientDto(ingredient)));
         }
 
-        if (recipe.getCategories() != null && recipe.getCategories().size() > 0){
-            recipe.getCategories()
-                    .forEach(category -> recipeDto.getCategories()
-                            .add(categoryMapper.categoryToCategoryDto(category)));
+        if (recipe.getCategoryNames() != null && recipe.getCategoryNames().size() > 0){
+            recipe.getCategoryNames()
+                    .forEach(categoryID -> recipeDto.getCategoryNames()
+                            .add(categoryID));
         }
 
 
@@ -75,10 +75,10 @@ public class RecipeMapperImpl implements RecipeMapper {
                             .add(ingredientMapper.ingredientDtoToIngredient(ingredientDto)));
         }
 
-        if (recipeDto.getCategories() != null && recipeDto.getCategories().size() > 0){
-            recipeDto.getCategories()
-                    .forEach(categoryDto -> recipe.getCategories()
-                            .add(categoryMapper.categoryDtoToCategory(categoryDto)));
+        if (recipeDto.getCategoryNames() != null && recipeDto.getCategoryNames().size() > 0){
+            recipeDto.getCategoryNames()
+                    .forEach(categoryDtoId -> recipe.getCategoryNames()
+                            .add(categoryDtoId));
         }
 
 

@@ -38,7 +38,7 @@ public class RecipeController {
     }
 
     @GetMapping("/{name}/categories")
-    public List<CategoryDto> getCategoriesByRecipeName(@PathVariable String name){
+    public List<String> getCategoriesByRecipeName(@PathVariable String name){
 
        return recipeService.getCategoriesByRecipeName(name);
     }

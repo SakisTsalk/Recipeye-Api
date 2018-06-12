@@ -2,13 +2,16 @@ package com.recipeye.recipeye_api.api.model;
 
 import com.recipeye.recipeye_api.domain.Difficulty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 public class RecipeDto {
 
     private String id;
@@ -25,5 +28,6 @@ public class RecipeDto {
     private Byte[] image;
     private Difficulty difficulty;
     private String notes;
-    private List<CategoryDto> categories = new ArrayList<>();
+
+    private List<String> categoryNames = new ArrayList<>();
 }

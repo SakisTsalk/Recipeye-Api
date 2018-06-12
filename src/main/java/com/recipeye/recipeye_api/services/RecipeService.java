@@ -21,6 +21,6 @@ public interface RecipeService {
 
     void deleteRecipeByName(String name);
 
-    List<CategoryDto> getCategoriesByRecipeName(String name);
+    List<String> getCategoriesByRecipeName(String name);
 
 }

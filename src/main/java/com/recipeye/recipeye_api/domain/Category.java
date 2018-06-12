@@ -12,7 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Data
+@Getter
+@Setter
 @Document
 public class Category {
     @Id

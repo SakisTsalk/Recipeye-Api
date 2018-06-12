@@ -1,5 +1,6 @@
 package com.recipeye.recipeye_api.services;
 
+import com.recipeye.recipeye_api.api.model.CategoryDto;
 import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.domain.Recipe;
 
@@ -13,5 +14,13 @@ public interface RecipeService {
      RecipeDto gerRecipeByName(String name);
 
     RecipeDto createNewRecipe(RecipeDto recipeDto);
+
+    RecipeDto changeRecipe(String name, RecipeDto recipeDto);
+
+    RecipeDto putRecipeByDTO(String  name, RecipeDto recipeDto);
+
+    void deleteRecipeByName(String name);
+
+    List<CategoryDto> getCategoriesByRecipeName(String name);
 
 }

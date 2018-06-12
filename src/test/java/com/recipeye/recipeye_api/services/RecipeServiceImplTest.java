@@ -41,7 +41,7 @@ public class RecipeServiceImplTest {
         MockitoAnnotations.initMocks(this);
 
 
-        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryMapper, categoryRepository);
+        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryRepository);
 
     }
 

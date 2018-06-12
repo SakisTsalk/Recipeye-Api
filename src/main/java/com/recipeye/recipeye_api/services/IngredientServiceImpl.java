@@ -5,11 +5,13 @@ import com.recipeye.recipeye_api.api.model.IngredientDto;
 import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.domain.Recipe;
 import com.recipeye.recipeye_api.repositories.RecipeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 public class IngredientServiceImpl implements  IngredientService{
 
@@ -29,12 +31,16 @@ public class IngredientServiceImpl implements  IngredientService{
 
         Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
 
-        Recipe recipe = new Recipe();
+        Recipe recipe;
 
-        if(recipeOptional.isPresent()){
+
+        if(!recipeOptional.isPresent()){
+            log.error("Recipe not found:" +recipeName);
+        }
+
             recipe = recipeOptional.get();
 
-        }
+
 
         RecipeDto recipeDto = recipeMapper.recipeToRecipeDto(recipe);
 

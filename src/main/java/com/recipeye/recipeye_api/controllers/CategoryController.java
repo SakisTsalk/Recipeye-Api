@@ -30,7 +30,7 @@ public class CategoryController {
 
     @GetMapping("/api/categories/{name}/recipes")
     @ResponseStatus(HttpStatus.OK)
-    public List<RecipeDto> getrecipeListFromCategoryName(@PathVariable String name){
+    public List<RecipeDto> getRecipeListFromCategoryName(@PathVariable String name){
 
         return categoryService.getRecipesByCategoryName(name);
     }

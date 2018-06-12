@@ -1,10 +1,13 @@
 package com.recipeye.recipeye_api.controllers;
 
+import com.recipeye.recipeye_api.api.model.CategoryDto;
 import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.api.model.RecipeListDto;
 import com.recipeye.recipeye_api.services.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(RecipeController.BASE_URL)
@@ -21,9 +24,9 @@ public class RecipeController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public RecipeListDto getAllRecipes(){
+    public List<RecipeDto> getAllRecipes(){
 
-        return new RecipeListDto(recipeService.getRecipes());
+        return  recipeService.getRecipes();
 
     }
 
@@ -34,11 +37,39 @@ public class RecipeController {
         return recipeService.gerRecipeByName(name);
     }
 
+    @GetMapping("/{name}/categories")
+    public List<CategoryDto> getCategoriesByRecipeName(@PathVariable String name){
+
+       return recipeService.getCategoriesByRecipeName(name);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public RecipeDto createNewRecipe(@RequestBody RecipeDto recipeDto) {
 
         return  recipeService.createNewRecipe(recipeDto);
+    }
+
+    @PutMapping("/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public RecipeDto updateRecipe(@PathVariable String name, @RequestBody RecipeDto recipeDto) {
+
+        return recipeService.putRecipeByDTO(name, recipeDto);
+    }
+
+
+    @PatchMapping("/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public RecipeDto patchRecipe(@PathVariable String name, @RequestBody RecipeDto recipeDto){
+
+        return recipeService.changeRecipe(name, recipeDto);
+
+    }
+
+    @DeleteMapping("/{name}")
+    public  void  deleteRecipeByName(@PathVariable String name){
+        recipeService.deleteRecipeByName(name);
+
     }
 
 

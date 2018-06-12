@@ -8,6 +8,7 @@ import com.recipeye.recipeye_api.domain.Category;
 import com.recipeye.recipeye_api.domain.Recipe;
 import com.recipeye.recipeye_api.repositories.CategoryRepository;
 import com.recipeye.recipeye_api.repositories.RecipeRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,30 +16,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.*;
 
+@Slf4j
 @Service
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeMapper recipeMapper;
     private final RecipeRepository recipeRepository;
-    private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
 
-    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryMapper categoryMapper, CategoryRepository categoryRepository) {
+    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryRepository categoryRepository) {
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
-        this.categoryMapper = categoryMapper;
         this.categoryRepository = categoryRepository;
     }
-
 
     @Override
     public List<RecipeDto> getRecipes() {
 
-      List<Recipe> recipeSet = new ArrayList<>();
-        recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
+      List<Recipe> recipeSet;
 
-      System.out.println(recipeSet.get(0).getDescription());
-      System.out.println(recipeSet.get(1).getDescription());
+        System.out.println(recipeRepository.count());
+
+         recipeSet = recipeRepository.findAll();
+
 
       return recipeSet.stream().map(recipeMapper::recipeToRecipeDto).collect(Collectors.toList());
 
@@ -48,6 +48,11 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeDto gerRecipeByName(String name) {
 
         Optional<Recipe> recipeOptional = recipeRepository.findByName(name);
+
+
+        if(!recipeOptional.isPresent()){
+            log.error("Category not found:" +name);
+        }
 
         return recipeMapper.recipeToRecipeDto(recipeOptional.get());
 
@@ -67,6 +72,11 @@ public class RecipeServiceImpl implements RecipeService {
 
             Optional<Category> categoryOptional = categoryRepository.findByDescription(categoryDto.getDescription());
 
+
+            if(!categoryOptional.isPresent()){
+                log.error("Category not found:" +categoryDto.getDescription());
+            }
+
             Category category = categoryOptional.get();
 
             category.getRecipes().add(recipe);
@@ -77,6 +87,64 @@ public class RecipeServiceImpl implements RecipeService {
         }
 
       return recipeMapper.recipeToRecipeDto(recipe);
+    }
+
+    @Override
+    public RecipeDto changeRecipe(String name, RecipeDto recipeDto) {
+        return  recipeRepository.findByName(name).map(recipe -> {
+
+            if (recipeDto.getDescription()!= null){
+                recipe.setDescription(recipeDto.getDescription());
+            }
+
+            if (recipeDto.getName()!= null){
+                recipe.setName(recipeDto.getName());
+            }
+
+            RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipeRepository.save(recipe));
+
+            return  returnDto;
+        }).orElseThrow(UnknownError::new);
+    }
+
+    @Override
+    public RecipeDto putRecipeByDTO(String name, RecipeDto recipeDto) {
+
+        Recipe recipe = recipeMapper.recipeDtoToRecipe(recipeDto);
+
+        recipe.setName(name);
+
+        recipeRepository.save(recipe);
+
+        RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipe);
+
+        return returnDto;
+    }
+
+    @Override
+    public void deleteRecipeByName(String name) {
+
+        RecipeDto recipeToDelete = gerRecipeByName(name);
+
+         recipeRepository.deleteById(recipeToDelete.getId());
+
+    }
+
+    @Override
+    public List<CategoryDto> getCategoriesByRecipeName(String name) {
+
+        Optional<Recipe> recipeOptional = recipeRepository.findByName(name);
+
+
+        if(!recipeOptional.isPresent()){
+            log.error("Category not found:" +name);
+        }
+
+        Recipe recipe = recipeOptional.get();
+
+        RecipeDto recipeDto = recipeMapper.recipeToRecipeDto(recipe);
+
+        return  recipeDto.getCategories();
     }
 
 

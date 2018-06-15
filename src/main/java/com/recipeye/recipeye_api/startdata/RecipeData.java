@@ -26,8 +26,8 @@ public class RecipeData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadCategories();
-        loadRecipes();
+//        loadCategories();
+//        loadRecipes();
     }
 
 

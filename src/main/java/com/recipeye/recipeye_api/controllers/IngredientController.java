@@ -1,13 +1,11 @@
 package com.recipeye.recipeye_api.controllers;
 
 import com.recipeye.recipeye_api.api.model.IngredientDto;
+import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.api.model.RecipeListDto;
 import com.recipeye.recipeye_api.services.IngredientService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,8 +21,24 @@ public class IngredientController {
 
     @GetMapping("/api/recipes/{name}/ingredients")
     @ResponseStatus(HttpStatus.OK)
-    public List<IngredientDto> getAllRecipes(@PathVariable String name){
+    public List<IngredientDto> getAllIngredientsByRecipeName(@PathVariable String name){
 
         return ingredientService.getIngredientsByRecipeName(name);
     }
+
+    @PostMapping("/api/recipes/{name}/ingredients")
+    @ResponseStatus(HttpStatus.OK)
+    public List<IngredientDto> addIngredientsListByRecipeName(@PathVariable String name, @RequestBody List<IngredientDto> ingredientDtos){
+
+        return  ingredientService.addIngredientsByRecipeName(name, ingredientDtos);
+
+    }
+
+    @DeleteMapping(("/api/recipes/{name}/ingredients"))
+    public void deleteAllIngredientsByRecipeName(@PathVariable String name) {
+
+        ingredientService.deleteAllIngredientsByRecipeName(name);
+    }
+
+
 }

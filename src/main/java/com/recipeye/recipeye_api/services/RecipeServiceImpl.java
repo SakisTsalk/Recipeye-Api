@@ -1,17 +1,16 @@
 package com.recipeye.recipeye_api.services;
 
-import com.recipeye.recipeye_api.api.mapper.CategoryMapper;
 import com.recipeye.recipeye_api.api.mapper.RecipeMapper;
-import com.recipeye.recipeye_api.api.model.CategoryDto;
 import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.domain.Category;
 import com.recipeye.recipeye_api.domain.Recipe;
+import com.recipeye.recipeye_api.domain.User;
 import com.recipeye.recipeye_api.repositories.CategoryRepository;
 import com.recipeye.recipeye_api.repositories.RecipeRepository;
+import com.recipeye.recipeye_api.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.*;
@@ -23,11 +22,13 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeMapper recipeMapper;
     private final RecipeRepository recipeRepository;
     private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
-    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryRepository categoryRepository) {
+    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -59,34 +60,59 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDto createNewRecipe(RecipeDto recipeDto) {
+    public RecipeDto createNewRecipe(RecipeDto recipeDto, String username) {
 
-      Recipe recipe = recipeMapper.recipeDtoToRecipe(recipeDto);
-
-      recipeRepository.save(recipe);
-
-        List<String> categoryDtoNames = recipeDto.getCategoryNames();
-
-        for(String categoryName: categoryDtoNames){
+       Optional<User> userOptional =  userRepository.findByUsername(username);
 
 
-            Optional<Category> categoryOptional = categoryRepository.findByDescription(categoryName);
 
+        if(username.isEmpty() || !userOptional.isPresent()){
 
-            if(!categoryOptional.isPresent()){
-                log.error("Category not found:" +categoryName);
-            }
-
-            Category category = categoryOptional.get();
-
-            category.getRecipes().add(recipe);
-
-            categoryRepository.save(category);
-
-
+            log.error("User with ID not found" +username);
+            return null;
         }
 
-      return recipeMapper.recipeToRecipeDto(recipe);
+        User user = userOptional.get();
+
+        if(user.isLoggedIn()) {
+
+            Recipe recipe = recipeMapper.recipeDtoToRecipe(recipeDto);
+
+            recipe.setUserOwned(username);
+
+            recipeRepository.save(recipe);
+
+            user.getRecipesByName().add(recipe.getName());
+
+            userRepository.save(user);
+
+            List<String> categoryDtoNames = recipeDto.getCategoryNames();
+
+            for (String categoryName : categoryDtoNames) {
+
+
+                Optional<Category> categoryOptional = categoryRepository.findByDescription(categoryName);
+
+
+                if (!categoryOptional.isPresent()) {
+                    log.error("Category not found:" + categoryName);
+                }
+
+                Category category = categoryOptional.get();
+
+                category.getRecipes().add(recipe);
+
+                categoryRepository.save(category);
+
+
+            }
+
+            return recipeMapper.recipeToRecipeDto(recipe);
+
+        } else {
+            log.error("User is not logged in"+ username);
+            return null;
+        }
     }
 
     @Override

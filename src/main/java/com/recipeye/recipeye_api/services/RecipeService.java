@@ -13,7 +13,7 @@ public interface RecipeService {
 
      RecipeDto gerRecipeByName(String name);
 
-    RecipeDto createNewRecipe(RecipeDto recipeDto);
+    RecipeDto createNewRecipe(RecipeDto recipeDto, String userId);
 
     RecipeDto changeRecipe(String name, RecipeDto recipeDto);
 

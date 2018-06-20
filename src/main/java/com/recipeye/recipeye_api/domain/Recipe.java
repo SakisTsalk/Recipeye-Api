@@ -38,6 +38,8 @@ public class Recipe {
 
     private List<String> categoryNames = new ArrayList<>();
 
+    private String userOwned;
+
 
 
 

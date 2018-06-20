@@ -1,11 +1,9 @@
 package com.recipeye.recipeye_api.startdata;
 
-import com.recipeye.recipeye_api.domain.Category;
-import com.recipeye.recipeye_api.domain.Difficulty;
-import com.recipeye.recipeye_api.domain.Ingredient;
-import com.recipeye.recipeye_api.domain.Recipe;
+import com.recipeye.recipeye_api.domain.*;
 import com.recipeye.recipeye_api.repositories.CategoryRepository;
 import com.recipeye.recipeye_api.repositories.RecipeRepository;
+import com.recipeye.recipeye_api.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -17,17 +15,19 @@ public class RecipeData implements CommandLineRunner {
 
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
 
-    public RecipeData(CategoryRepository categoryRepository, RecipeRepository recipeRepository) {
+    public RecipeData(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UserRepository userRepository) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
+        this.userRepository = userRepository;
     }
 
 
     @Override
     public void run(String... args) throws Exception {
-//        loadCategories();
-//        loadRecipes();
+        loadCategories();
+       loadRecipes();
     }
 
 
@@ -48,8 +48,17 @@ public class RecipeData implements CommandLineRunner {
         cat4.setDescription("Vegan");
         categoryRepository.save(cat4);
 
+        User user = new User();
+
+        user.setUsername("trey");
+        user.setPassword("sax");
+        user.setEmail("treysax@uom.gr");
+
+        userRepository.save(user);
+
 
         System.out.println("Categories Loaded: " + categoryRepository.count());
+        System.out.println("users Loaded: " + userRepository.count());
 
     }
 

@@ -6,6 +6,7 @@ import com.recipeye.recipeye_api.api.model.RecipeDto;
 import com.recipeye.recipeye_api.domain.Recipe;
 import com.recipeye.recipeye_api.repositories.CategoryRepository;
 import com.recipeye.recipeye_api.repositories.RecipeRepository;
+import com.recipeye.recipeye_api.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -33,6 +34,9 @@ public class RecipeServiceImplTest {
     CategoryRepository categoryRepository;
 
     @Mock
+    UserRepository userRepository;
+
+    @Mock
     CategoryMapper categoryMapper;
 
     @Before
@@ -41,7 +45,7 @@ public class RecipeServiceImplTest {
         MockitoAnnotations.initMocks(this);
 
 
-        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryRepository);
+        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryRepository, userRepository);
 
     }
 

@@ -34,6 +34,8 @@ public class RecipeMapperImpl implements RecipeMapper {
         recipeDto.setServings(recipe.getServings());
         recipeDto.setSource(recipe.getSource());
 
+        recipeDto.setUserOwned(recipe.getUserOwned());
+
         if (recipe.getIngredients() != null && recipe.getIngredients().size() > 0){
             recipe.getIngredients()
                     .forEach(ingredient -> recipeDto.getIngredients()
@@ -68,6 +70,8 @@ public class RecipeMapperImpl implements RecipeMapper {
         recipe.setDirections(recipeDto.getDirections());
         recipe.setServings(recipeDto.getServings());
         recipe.setSource(recipeDto.getSource());
+
+        recipe.setUserOwned(recipeDto.getUserOwned());
 
         if (recipeDto.getIngredients() != null && recipeDto.getIngredients().size() > 0){
             recipeDto.getIngredients()

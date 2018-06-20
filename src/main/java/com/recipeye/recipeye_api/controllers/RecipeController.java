@@ -43,11 +43,11 @@ public class RecipeController {
        return recipeService.getCategoriesByRecipeName(name);
     }
 
-    @PostMapping
+    @PostMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public RecipeDto createNewRecipe(@RequestBody RecipeDto recipeDto) {
+    public RecipeDto createNewRecipe(@RequestBody RecipeDto recipeDto,@PathVariable String username) {
 
-        return  recipeService.createNewRecipe(recipeDto);
+        return  recipeService.createNewRecipe(recipeDto, username);
     }
 
     @PutMapping("/{name}")

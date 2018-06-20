@@ -30,4 +30,6 @@ public class RecipeDto {
     private String notes;
 
     private List<String> categoryNames = new ArrayList<>();
+
+    private String userOwned;
 }

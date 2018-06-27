@@ -26,18 +26,33 @@ public class IngredientController {
         return ingredientService.getIngredientsByRecipeName(name);
     }
 
-    @PostMapping("/api/recipes/{name}/ingredients")
+    @PostMapping("/api/{username}/recipes/{name}/ingredients")
     @ResponseStatus(HttpStatus.OK)
-    public List<IngredientDto> addIngredientsListByRecipeName(@PathVariable String name, @RequestBody List<IngredientDto> ingredientDtos){
+    public List<IngredientDto> addIngredientsListByRecipeName(@PathVariable String username, @PathVariable String name, @RequestBody List<IngredientDto> ingredientDtos){
 
-        return  ingredientService.addIngredientsByRecipeName(name, ingredientDtos);
+        return  ingredientService.addIngredientsByRecipeName(username, name, ingredientDtos);
 
     }
 
-    @DeleteMapping(("/api/recipes/{name}/ingredients"))
-    public void deleteAllIngredientsByRecipeName(@PathVariable String name) {
+    @PatchMapping("/api/{username}/recipes/{name}/ingredients/{ingredientID}")
+    @ResponseStatus(HttpStatus.OK)
+    public IngredientDto changeIngredientByID(@PathVariable String username, @PathVariable String name, @PathVariable String ingredientID, @RequestBody IngredientDto ingredientDto) {
 
-        ingredientService.deleteAllIngredientsByRecipeName(name);
+        return ingredientService.changeIngredientByID(username, name, ingredientID, ingredientDto);
+    }
+
+    @DeleteMapping(("/api/{username}/recipes/{name}/ingredients"))
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteAllIngredientsByRecipeName(@PathVariable String username, @PathVariable String name) {
+
+        ingredientService.deleteAllIngredientsByRecipeName(username, name);
+    }
+
+    @DeleteMapping(("/api/{username}/recipes/{name}/ingredients/{ingredientID}"))
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteIngredientByID(@PathVariable String username, @PathVariable String name, @PathVariable String ingredientID) {
+
+        ingredientService.deleteIngredientById(username, name, ingredientID);
     }
 
 

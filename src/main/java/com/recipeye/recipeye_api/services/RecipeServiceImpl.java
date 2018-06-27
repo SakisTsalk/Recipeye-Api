@@ -23,12 +23,14 @@ public class RecipeServiceImpl implements RecipeService {
     private final RecipeRepository recipeRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryRepository categoryRepository, UserRepository userRepository) {
+    public RecipeServiceImpl(RecipeMapper recipeMapper, RecipeRepository recipeRepository, CategoryRepository categoryRepository, UserRepository userRepository, UserService userService) {
         this.recipeMapper = recipeMapper;
         this.recipeRepository = recipeRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDto gerRecipeByName(String name) {
+    public RecipeDto getRecipeByName(String name) {
 
         Optional<Recipe> recipeOptional = recipeRepository.findByName(name);
 
@@ -68,7 +70,7 @@ public class RecipeServiceImpl implements RecipeService {
 
         if(username.isEmpty() || !userOptional.isPresent()){
 
-            log.error("User with ID not found" +username);
+            log.error("User with username not found" +username);
             return null;
         }
 
@@ -116,45 +118,135 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public RecipeDto changeRecipe(String name, RecipeDto recipeDto) {
-        return  recipeRepository.findByName(name).map(recipe -> {
+    public RecipeDto changeRecipe(String username, String name, RecipeDto recipeDto) {
 
-            if (recipeDto.getDescription()!= null){
-                recipe.setDescription(recipeDto.getDescription());
-            }
 
-            if (recipeDto.getName()!= null){
-                recipe.setName(recipeDto.getName());
-            }
+        if (userService.checkIfUserIsLoggedInByUsername(username)) {
 
-            RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipeRepository.save(recipe));
+            return recipeRepository.findByName(name).map(recipe -> {
 
-            return  returnDto;
-        }).orElseThrow(UnknownError::new);
+                if(!recipe.getUserOwned().equals(username)){
+                    log.error("user: " +username+" does not own this recipe");
+                    return null;
+                }
+
+                if (recipeDto.getDescription() != null) {
+                    recipe.setDescription(recipeDto.getDescription());
+                }
+
+                if (recipeDto.getName() != null) {
+                    recipe.setName(recipeDto.getName());
+                }
+
+                if (recipeDto.getCookTime() != null) {
+                    recipe.setCookTime(recipeDto.getCookTime());
+                }
+
+                if (recipeDto.getDifficulty() != null) {
+                    recipe.setDifficulty(recipeDto.getDifficulty());
+                }
+
+                if (recipeDto.getPrepTime() != null) {
+                    recipe.setPrepTime(recipeDto.getPrepTime());
+                }
+
+                if (recipeDto.getSource() != null) {
+                    recipe.setSource(recipeDto.getSource());
+                }
+
+                if (recipeDto.getServings() != null) {
+                    recipe.setServings(recipeDto.getServings());
+                }
+
+                if (recipeDto.getImage() != null) {
+                    recipe.setImage(recipeDto.getImage());
+                }
+
+                if (recipeDto.getDirections() != null) {
+                    recipe.setDirections(recipeDto.getDirections());
+                }
+
+                if (recipeDto.getNotes() != null) {
+                    recipe.setNotes(recipeDto.getNotes());
+                }
+
+                if (recipeDto.getCategoryNames() != null) {
+
+                    recipe.getCategoryNames().clear();
+
+                    for (String categoryName : recipeDto.getCategoryNames()) {
+
+                        recipe.getCategoryNames().add(categoryName);
+                    }
+                }
+
+
+                RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipeRepository.save(recipe));
+
+                return returnDto;
+            }).orElseThrow(UnknownError::new);
+        } else {
+            log.error("User is not logged in"+ username);
+            return null;
+        }
+
     }
 
     @Override
-    public RecipeDto putRecipeByDTO(String name, RecipeDto recipeDto) {
+    public RecipeDto putRecipeByDTO(String username, String name, RecipeDto recipeDto) {
 
-        Recipe recipe = recipeMapper.recipeDtoToRecipe(recipeDto);
 
-        recipe.setName(name);
+        if (userService.checkIfUserIsLoggedInByUsername(username)) {
 
-        recipeRepository.save(recipe);
 
-        RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipe);
 
-        return returnDto;
+            Recipe recipe = recipeMapper.recipeDtoToRecipe(recipeDto);
+
+            if(!recipe.getUserOwned().equals(username)){
+                log.error("user: " +username+" does not own this recipe");
+                return null;
+            }
+
+            recipe.setName(name);
+
+            recipeRepository.save(recipe);
+
+            RecipeDto returnDto = recipeMapper.recipeToRecipeDto(recipe);
+
+            return returnDto;
+
+        } else {
+            log.error("User is not logged in"+ username);
+            return null;
+        }
     }
 
     @Override
-    public void deleteRecipeByName(String name) {
+    public void deleteRecipeByName(String username, String name) {
 
-        RecipeDto recipeToDelete = gerRecipeByName(name);
 
-         recipeRepository.deleteById(recipeToDelete.getId());
+        if (userService.checkIfUserIsLoggedInByUsername(username)) {
+
+            RecipeDto recipeToDelete = getRecipeByName(name);
+
+            if(recipeToDelete.getUserOwned().equals(username)){
+
+                recipeRepository.deleteById(recipeToDelete.getId());
+
+            } else {
+                log.error("user: " +username+" does not own this recipe");
+
+            }
+
+
+        } else {
+            log.error("User is not logged in" + username);
+
+        }
 
     }
+
+
 
     @Override
     public List<String> getCategoriesByRecipeName(String name) {

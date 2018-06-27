@@ -118,4 +118,28 @@ public class UserServiceImpl implements UserService {
 
         return  recipeDtoList;
     }
-}
+
+    @Override
+    public boolean checkIfUserIsLoggedInByUsername(String username) {
+
+        Optional<User> userOptional =  userRepository.findByUsername(username);
+
+
+        if(username.isEmpty() || !userOptional.isPresent()){
+
+            log.error("User with username not found" +username);
+            return false;
+        }
+
+        User user = userOptional.get();
+
+        if(user.isLoggedIn()) {
+            return true;
+
+        } else {
+                log.error("User is not logged in"+ username);
+                return false;
+            }
+        }
+    }
+

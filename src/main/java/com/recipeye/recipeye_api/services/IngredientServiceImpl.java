@@ -10,7 +10,6 @@ import com.recipeye.recipeye_api.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,13 +19,16 @@ public class IngredientServiceImpl implements  IngredientService{
 
    private final RecipeRepository recipeRepository;
 
+   private final UserService userService;
+
    private final RecipeMapper recipeMapper;
 
    private  final IngredientMapper ingredientMapper;
 
 
-    public IngredientServiceImpl(RecipeRepository recipeRepository, RecipeMapper recipeMapper, IngredientMapper ingredientMapper) {
+    public IngredientServiceImpl(RecipeRepository recipeRepository, UserService userService, RecipeMapper recipeMapper, IngredientMapper ingredientMapper) {
         this.recipeRepository = recipeRepository;
+        this.userService = userService;
 
         this.recipeMapper = recipeMapper;
         this.ingredientMapper = ingredientMapper;
@@ -34,6 +36,8 @@ public class IngredientServiceImpl implements  IngredientService{
 
     @Override
     public List<IngredientDto> getIngredientsByRecipeName(String recipeName) {
+
+
 
         Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
 
@@ -54,46 +58,164 @@ public class IngredientServiceImpl implements  IngredientService{
     }
 
     @Override
-    public List<IngredientDto> addIngredientsByRecipeName(String recipeName, List<IngredientDto> ingredientDtos) {
+    public List<IngredientDto> addIngredientsByRecipeName(String username, String recipeName, List<IngredientDto> ingredientDtos) {
 
-        Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
+        if(userService.checkIfUserIsLoggedInByUsername(username)) {
 
-        if(!recipeOptional.isPresent()){
-            log.error("Recipe not found:" +recipeName);
-        }
+            Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
 
-        Recipe  recipe = recipeOptional.get();
+            if (!recipeOptional.isPresent()) {
+                log.error("Recipe not found:" + recipeName);
+            }
+
+            Recipe recipe = recipeOptional.get();
+
+            if(!recipe.getUserOwned().equals(username)){
+                log.error("user: " +username+" does not own this recipe");
+                return null;
+            }
 
             ingredientDtos.forEach(ingredient -> recipe.getIngredients()
-                            .add(ingredientMapper.ingredientDtoToIngredient(ingredient)));
+                    .add(ingredientMapper.ingredientDtoToIngredient(ingredient)));
 
 
-        System.out.println(recipe.getIngredients());
+            System.out.println(recipe.getIngredients());
 
 
+            recipeRepository.save(recipe);
 
-        recipeRepository.save(recipe);
-
-        return ingredientDtos;
+            return ingredientDtos;
+        }else {
+            log.error("User not logged in");
+            return null;
+        }
         }
 
     @Override
-    public void deleteAllIngredientsByRecipeName(String recipeName) {
+    public IngredientDto changeIngredientByID(String username, String recipeName, String ingredientID, IngredientDto ingredientDto) {
 
-        Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
+        IngredientDto returnedIngredientDto = new IngredientDto();
+
+        if(userService.checkIfUserIsLoggedInByUsername(username)){
 
 
-        if(!recipeOptional.isPresent()){
-            log.error("Recipe not found:" +recipeName);
+            Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
+
+
+            if(!recipeOptional.isPresent()){
+                log.error("Recipe not found:" +recipeName);
+            }
+
+            Recipe recipe = recipeOptional.get();
+
+            if(!recipe.getUserOwned().equals(username)){
+                log.error("user: " +username+" does not own this recipe");
+                return null;
+            }
+
+            if(recipe.getUserOwned().equals(username)){
+                for (Ingredient ingredient: recipe.getIngredients()){
+
+                    if (ingredient.getId().equals(ingredientID)) {
+                        if(ingredientDto.getAmount() != null){
+                            ingredient.setAmount(ingredientDto.getAmount());
+                        }
+
+                        if(ingredientDto.getUom() != null){
+                            ingredient.setUom(ingredientDto.getUom());
+                        }
+
+                        if(ingredientDto.getDescription() != null){
+                            ingredient.setDescription(ingredientDto.getDescription());
+                        }
+                    }
+
+                }
+
+                recipeRepository.save(recipe);
+
+                for (IngredientDto returnIngredientDto: recipeMapper.recipeToRecipeDto(recipe).getIngredients()){
+
+                    if (returnIngredientDto.getId().equals(ingredientID)){
+                        returnedIngredientDto = returnIngredientDto;
+                    }
+                }
+
+                return returnedIngredientDto;
+            } else {
+                log.error("User is not logged in" + username);
+                return null;
+            }
+
+
+        }else {
+            log.error("User not logged in");
+            return null;
         }
+    }
 
-        Recipe recipe = recipeOptional.get();
+    @Override
+    public void deleteAllIngredientsByRecipeName( String username, String recipeName) {
 
-        recipe.getIngredients().clear();
 
-        System.out.println(recipe.getIngredients().size());
+        if(userService.checkIfUserIsLoggedInByUsername(username)) {
 
-        recipeRepository.save(recipe);
+
+            Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
+
+
+            if (!recipeOptional.isPresent()) {
+                log.error("Recipe not found:" + recipeName);
+            }
+
+            Recipe recipe = recipeOptional.get();
+
+            if(recipe.getUserOwned().equals(username)) {
+
+                recipe.getIngredients().clear();
+
+                System.out.println(recipe.getIngredients().size());
+
+                recipeRepository.save(recipe);
+            }else {
+                log.error("user: " +username+" does not own this recipe");
+            }
+        }else {
+            log.error("User not logged in");
+        }
+    }
+
+    @Override
+    public void deleteIngredientById(String username, String recipeName, String ingredientID) {
+
+        if(userService.checkIfUserIsLoggedInByUsername(username)) {
+
+            Optional<Recipe> recipeOptional = recipeRepository.findByName(recipeName);
+
+
+            if (!recipeOptional.isPresent()) {
+                log.error("Recipe not found:" + recipeName);
+            }
+
+            Recipe recipe = recipeOptional.get();
+
+            if(recipe.getUserOwned().equals(username)) {
+
+            for (Ingredient ingredient : recipe.getIngredients()) {
+
+                if (ingredient.getId().equals(ingredientID)) {
+                    recipe.getIngredients().remove(ingredient);
+                }
+
+            }
+
+            recipeRepository.save(recipe);
+            }else {
+                log.error("user: " +username+" does not own this recipe");
+            }
+        }else {
+            log.error("User not logged in");
+        }
     }
 
 

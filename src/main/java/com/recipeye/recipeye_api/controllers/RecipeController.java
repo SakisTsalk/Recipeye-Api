@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(RecipeController.BASE_URL)
+//@RequestMapping(RecipeController.BASE_URL)
 public class RecipeController {
 
-    public static final String BASE_URL = "/api/recipes";
+   // public static final String BASE_URL = "/api";
 
     private final RecipeService recipeService;
 
@@ -22,7 +22,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @GetMapping
+    @GetMapping("/api/recipes")
     @ResponseStatus(HttpStatus.OK)
     public List<RecipeDto> getAllRecipes(){
 
@@ -30,45 +30,47 @@ public class RecipeController {
 
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/api/recipes/{name}")
     @ResponseStatus(HttpStatus.OK)
     public RecipeDto getRecipeByName(@PathVariable String name)
     {
-        return recipeService.gerRecipeByName(name);
+        return recipeService.getRecipeByName(name);
     }
 
-    @GetMapping("/{name}/categories")
+    @GetMapping("/api/recipes/{name}/categories")
     public List<String> getCategoriesByRecipeName(@PathVariable String name){
 
        return recipeService.getCategoriesByRecipeName(name);
     }
 
-    @PostMapping("/{username}")
+    @PostMapping("/api/{username}/recipes")
     @ResponseStatus(HttpStatus.OK)
     public RecipeDto createNewRecipe(@RequestBody RecipeDto recipeDto,@PathVariable String username) {
 
         return  recipeService.createNewRecipe(recipeDto, username);
     }
 
-    @PutMapping("/{name}")
+    @PutMapping("/api/{username}/recipes/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public RecipeDto updateRecipe(@PathVariable String name, @RequestBody RecipeDto recipeDto) {
+    public RecipeDto updateRecipe(@PathVariable String username, @PathVariable String name, @RequestBody RecipeDto recipeDto) {
 
-        return recipeService.putRecipeByDTO(name, recipeDto);
+        return recipeService.putRecipeByDTO(username, name, recipeDto);
     }
 
 
-    @PatchMapping("/{name}")
+    @PatchMapping("/api/{username}/recipes/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public RecipeDto patchRecipe(@PathVariable String name, @RequestBody RecipeDto recipeDto){
+    public RecipeDto patchRecipe(@PathVariable String username, @PathVariable String name, @RequestBody RecipeDto recipeDto){
 
-        return recipeService.changeRecipe(name, recipeDto);
+        return recipeService.changeRecipe(username, name, recipeDto);
 
     }
 
-    @DeleteMapping("/{name}")
-    public  void  deleteRecipeByName(@PathVariable String name){
-        recipeService.deleteRecipeByName(name);
+    @DeleteMapping("/api/{username}/recipes/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public void  deleteRecipeByName(@PathVariable String username, @PathVariable String name){
+        recipeService.deleteRecipeByName(username, name);
+        System.out.println("Called delete method on" +name);
 
     }
 

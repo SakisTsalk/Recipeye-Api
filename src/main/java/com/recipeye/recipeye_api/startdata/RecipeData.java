@@ -26,8 +26,8 @@ public class RecipeData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadCategories();
-       loadRecipes();
+      /*  loadCategories();
+       loadRecipes();*/
     }
 
 
@@ -125,6 +125,8 @@ public class RecipeData implements CommandLineRunner {
 
         recipe1.setServings(4);
 
+        recipe1.setUserOwned("trey");
+
         recipeRepository.save(recipe1);
 
         greekCategory.getRecipes().add(recipe1);
@@ -157,6 +159,8 @@ public class RecipeData implements CommandLineRunner {
 
 
         recipe2.setServings(4);
+
+        recipe2.setUserOwned("trey");
 
         recipeRepository.save(recipe2);
 

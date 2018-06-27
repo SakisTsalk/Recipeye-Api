@@ -11,15 +11,15 @@ public interface RecipeService {
 
     List<RecipeDto> getRecipes();
 
-     RecipeDto gerRecipeByName(String name);
+     RecipeDto getRecipeByName(String name);
 
-    RecipeDto createNewRecipe(RecipeDto recipeDto, String userId);
+    RecipeDto createNewRecipe(RecipeDto recipeDto, String username);
 
-    RecipeDto changeRecipe(String name, RecipeDto recipeDto);
+    RecipeDto changeRecipe(String username, String name, RecipeDto recipeDto);
 
-    RecipeDto putRecipeByDTO(String  name, RecipeDto recipeDto);
+    RecipeDto putRecipeByDTO(String username, String  name, RecipeDto recipeDto);
 
-    void deleteRecipeByName(String name);
+    void deleteRecipeByName(String username, String name);
 
     List<String> getCategoriesByRecipeName(String name);
 

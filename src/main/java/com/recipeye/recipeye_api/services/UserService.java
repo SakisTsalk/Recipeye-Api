@@ -16,4 +16,6 @@ public interface UserService {
      String saveUser(User user);
 
      List<RecipeDto>  getRecipesByUser(String username);
+
+     boolean checkIfUserIsLoggedInByUsername(String username);
 }

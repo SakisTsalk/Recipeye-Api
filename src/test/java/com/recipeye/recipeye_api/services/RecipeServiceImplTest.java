@@ -39,13 +39,16 @@ public class RecipeServiceImplTest {
     @Mock
     CategoryMapper categoryMapper;
 
+    @Mock
+    UserService userService;
+
     @Before
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
 
 
-        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryRepository, userRepository);
+        recipeService = new RecipeServiceImpl(recipeMapper, recipeRepository, categoryRepository, userRepository, userService);
 
     }
 

@@ -8,7 +8,11 @@ public interface IngredientService {
 
     List<IngredientDto> getIngredientsByRecipeName(String recipeName);
 
-    List<IngredientDto> addIngredientsByRecipeName(String recipeName,List<IngredientDto> ingredientDtos);
+    List<IngredientDto> addIngredientsByRecipeName(String username, String recipeName,List<IngredientDto> ingredientDtos);
 
-    void deleteAllIngredientsByRecipeName(String recipeName);
+    IngredientDto changeIngredientByID(String username, String recipeName, String ingredientID, IngredientDto ingredientDto);
+
+    void deleteAllIngredientsByRecipeName(String username, String recipeName);
+
+    void deleteIngredientById(String username, String recipeName, String ingredientID);
 }
